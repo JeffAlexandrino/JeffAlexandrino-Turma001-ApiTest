@@ -118,12 +118,11 @@ describe('Toolshop API', () => {
       await p
         .spec()
         .get(`${baseUrl}/categories/search`)
-        .withQueryParams('query', 'tools') // Altere o termo conforme desejado
+        .withQueryParams('query', 'tools') 
         .expectStatus(StatusCodes.OK);
     });
 
     it('10. Patch Category (parcial)', async () => {
-      // Cria uma categoria para teste do PATCH
       const name = faker.commerce.department();
       const slug = faker.helpers.slugify(name.toLowerCase());
 
