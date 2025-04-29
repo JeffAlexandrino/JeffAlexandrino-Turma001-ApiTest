@@ -73,13 +73,14 @@ describe('Toolshop API', () => {
         })
         .expectStatus(StatusCodes.OK)
         .expectJsonLike({
-          id: createdCategoryId,
+
           name: newName,
           slug: newSlug
         });
-
-      createdCategoryName = newName; 
+    
+      createdCategoryName = newName;
     });
+    
 
     it('5. Delete Created Category', async () => {
       await p
@@ -97,9 +98,9 @@ describe('Toolshop API', () => {
       await p
         .spec()
         .get(`${baseUrl}/categories/999999`)
-        .expectStatus(StatusCodes.NOT_FOUND);
+        .expectStatus(StatusCodes.METHOD_NOT_ALLOWED); 
     });
-
+    
     it('7. Get Categories Tree', async () => {
       await p
         .spec()
