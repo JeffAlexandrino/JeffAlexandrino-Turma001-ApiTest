@@ -25,7 +25,7 @@ describe('Toolshop API', () => {
         .expectStatus(StatusCodes.OK)
         .expectJsonLike([
           {
-            id: like(1),
+            id: string(),
             name: string(),
             slug: string()
           }
@@ -48,22 +48,21 @@ describe('Toolshop API', () => {
       createdCategoryId = res.body.id;
     });
 
-    it('3. Get Created Category By ID', async () => {
+    it('3. Create Category with Existing Name', async () => {
       await p
         .spec()
-        .get(`${baseUrl}/categories/${createdCategoryId}`)
-        .expectStatus(StatusCodes.OK)
-        .expectJsonLike({
-          id: createdCategoryId,
-          name: string(),
-          slug: string()
-        });
+        .post(`${baseUrl}/categories`)
+        .withJson({
+          name: createdCategoryName,
+          slug: faker.helpers.slugify(createdCategoryName.toLowerCase())
+        })
+        .expectStatus(StatusCodes.BAD_REQUEST);
     });
 
     it('4. Update Category', async () => {
       const newName = faker.commerce.department();
       const newSlug = faker.helpers.slugify(newName.toLowerCase());
-
+    
       await p
         .spec()
         .put(`${baseUrl}/categories/${createdCategoryId}`)
@@ -73,8 +72,7 @@ describe('Toolshop API', () => {
         })
         .expectStatus(StatusCodes.OK)
         .expectJsonLike({
-
-          name: newName,
+          name: newName, 
           slug: newSlug
         });
     
@@ -126,24 +124,24 @@ describe('Toolshop API', () => {
     it('10. Patch Category (parcial)', async () => {
       const name = faker.commerce.department();
       const slug = faker.helpers.slugify(name.toLowerCase());
-
+    
       const res = await p
         .spec()
         .post(`${baseUrl}/categories`)
         .withJson({ name, slug })
         .expectStatus(StatusCodes.CREATED);
-
+    
       const patchCategoryId = res.body.id;
-
+    
       const newName = faker.commerce.department();
-
+    
       await p
         .spec()
         .patch(`${baseUrl}/categories/${patchCategoryId}`)
         .withJson({ name: newName })
         .expectStatus(StatusCodes.OK)
-        .expectJsonLike({ name: newName });
-
+        .expectJsonLike({ name: newName }); 
+    
       await p
         .spec()
         .delete(`${baseUrl}/categories/${patchCategoryId}`)
