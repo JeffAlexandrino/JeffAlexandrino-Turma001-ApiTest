@@ -160,10 +160,10 @@ describe('Toolshop API', () => {
         .expectStatus(StatusCodes.OK)
         .expectJsonLike({ name: newName });
 
-      // Log para depuração (opcional)
+      
       console.log('Patch Response:', patchResponse.body);
 
-      // Validação adicional (opcional)
+      
       expect(patchResponse.body.name).toBe(newName);
     });
   });
