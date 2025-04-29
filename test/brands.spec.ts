@@ -141,7 +141,7 @@ describe('Toolshop API', () => {
         .patch(`${baseUrl}/categories/${patchCategoryId}`)
         .withJson({ name: newName })
         .expectStatus(StatusCodes.OK); 
-    
+    //
       await p
         .spec()
         .delete(`${baseUrl}/categories/${patchCategoryId}`)
