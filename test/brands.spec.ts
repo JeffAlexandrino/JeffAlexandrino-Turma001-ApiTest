@@ -118,34 +118,36 @@ describe('Toolshop API', () => {
       await p
         .spec()
         .get(`${baseUrl}/categories/search`)
-        .withQueryParams('query', 'tools') 
+        .withQueryParams('query', 'tools') // Altere o termo conforme desejado
         .expectStatus(StatusCodes.OK);
     });
 
     it('10. Patch Category (parcial)', async () => {
+      // Cria uma categoria para teste do PATCH
       const name = faker.commerce.department();
       const slug = faker.helpers.slugify(name.toLowerCase());
-    
+
       const res = await p
         .spec()
         .post(`${baseUrl}/categories`)
         .withJson({ name, slug })
         .expectStatus(StatusCodes.CREATED);
-    
+
       const patchCategoryId = res.body.id;
-    
+
       const newName = faker.commerce.department();
-    
+
       await p
         .spec()
         .patch(`${baseUrl}/categories/${patchCategoryId}`)
         .withJson({ name: newName })
-        .expectStatus(StatusCodes.OK); 
-    //
+        .expectStatus(StatusCodes.OK)
+        .expectJsonLike({ name: newName });
+
       await p
         .spec()
         .delete(`${baseUrl}/categories/${patchCategoryId}`)
         .expectStatus(StatusCodes.NO_CONTENT);
-    });    
+    });
   });
 });
