@@ -25,7 +25,7 @@ describe('Toolshop API', () => {
         .expectStatus(StatusCodes.OK)
         .expectJsonLike([
           {
-            id: like('string'),
+            id: like('string'), 
             name: string(),
             slug: string()
           }
@@ -34,10 +34,8 @@ describe('Toolshop API', () => {
 
     it('2. Create New Category', async () => {
       createdCategoryName = faker.commerce.department();
-      const categorySlug = faker.helpers.slugify(
-        createdCategoryName.toLowerCase()
-      );
-
+      const categorySlug = faker.helpers.slugify(createdCategoryName.toLowerCase());
+    
       const res = await p
         .spec()
         .post(`${baseUrl}/categories`)
@@ -46,31 +44,31 @@ describe('Toolshop API', () => {
           slug: categorySlug
         })
         .expectStatus(StatusCodes.CREATED);
-
+    
+      
       createdCategoryId = res.body.id;
       expect(createdCategoryId).toBeDefined();
     });
 
     it('3. Create Category with Existing Name', async () => {
       // Tenta criar uma categoria com o mesmo nome e slug de uma já existente
-      const categorySlug = faker.helpers.slugify(
-        createdCategoryName.toLowerCase()
-      );
+      const categorySlug = faker.helpers.slugify(createdCategoryName.toLowerCase());
 
       await p
         .spec()
         .post(`${baseUrl}/categories`)
         .withJson({
           name: createdCategoryName, // Nome já existente
-          slug: categorySlug // Slug já existente
+          slug: categorySlug         // Slug já existente
         })
         .expectStatus(StatusCodes.BAD_REQUEST) // Espera erro 400 ou similar
         .expectJsonLike({
-          message: like('Category with this name or slug already exists')
+          message: like('Category with this name or slug already exists') // Mensagem de erro esperada
         });
     });
 
     it('4. Update Category', async () => {
+      // Atualiza o nome e o slug da categoria criada
       const newName = faker.commerce.department();
       const newSlug = faker.helpers.slugify(newName.toLowerCase());
 
@@ -81,7 +79,7 @@ describe('Toolshop API', () => {
           name: newName,
           slug: newSlug
         })
-        .expectStatus(StatusCodes.OK)
+        .expectStatus(StatusCodes.OK) 
         .expectJsonLike({
           name: newName,
           slug: newSlug
@@ -90,6 +88,7 @@ describe('Toolshop API', () => {
       // Atualiza os valores locais para refletir a mudança
       createdCategoryName = newName;
 
+      // Log opcional para depuração
       console.log('Update Response:', updateResponse.body);
     });
 
@@ -98,12 +97,12 @@ describe('Toolshop API', () => {
       await p
         .spec()
         .delete(`${baseUrl}/categories/${createdCategoryId}`)
-        .expectStatus(StatusCodes.OK);
+        .expectStatus(StatusCodes.OK); 
 
       await p
         .spec()
         .get(`${baseUrl}/categories/${createdCategoryId}`)
-        .expectStatus(StatusCodes.NOT_FOUND);
+        .expectStatus(StatusCodes.NOT_FOUND); 
     });
 
     it('6. Get Non-Existent Category', async () => {
@@ -139,31 +138,31 @@ describe('Toolshop API', () => {
       // Criação de uma nova categoria para o teste
       const name = faker.commerce.department();
       const slug = faker.helpers.slugify(name.toLowerCase());
-
+    
       const createResponse = await p
         .spec()
         .post(`${baseUrl}/categories`)
         .withJson({ name, slug })
         .expectStatus(StatusCodes.CREATED);
-
+    
       // Validação do ID retornado
       const patchCategoryId = createResponse.body.id;
       expect(patchCategoryId).toBeDefined();
-
+    
       // Atualização parcial da categoria
       const newName = faker.commerce.department();
-
+    
       const patchResponse = await p
         .spec()
         .patch(`${baseUrl}/categories/${patchCategoryId}`)
         .withJson({ name: newName })
         .expectStatus(StatusCodes.OK)
         .expectJsonLike({ name: newName });
-
-      
+    
+      // Log para depuração (opcional)
       console.log('Patch Response:', patchResponse.body);
-
-      
+    
+      // Validação adicional (opcional)
       expect(patchResponse.body.name).toBe(newName);
     });
   });
